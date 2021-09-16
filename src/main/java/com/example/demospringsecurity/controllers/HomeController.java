@@ -42,4 +42,14 @@ public class HomeController {
         //thực hiện thêm việc gì đó khác
         return "redirect:/contact";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/my-access-deny")
+    public String myAccessDeny() {
+        return "access-deny";
+    }
 }
