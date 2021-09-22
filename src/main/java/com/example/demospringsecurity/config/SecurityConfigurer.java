@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,11 +23,20 @@ import java.util.Map;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/profile")
-                .authenticated()
+        /*http.authorizeRequests().antMatchers("/profile")
+                .authenticated().antMatchers("/add-user").anonymous()
                 .and().authorizeRequests().antMatchers("/admin").hasAnyRole("ADMIN", "USER", "STAFF")
+                .and().authorizeRequests().antMatchers("/*").permitAll()
+                .and().formLogin().loginPage("/my-login").and().logout().logoutUrl("/my-logout").and().exceptionHandling()
+                .accessDeniedPage("/my-access-deny");*/
+
+        http.authorizeRequests().antMatchers("/add-user").anonymous()
+                .antMatchers("/admin").hasAnyRole("ADMIN", "STAFF")
                 .and().authorizeRequests().antMatchers("/*").permitAll()
                 .and().formLogin().loginPage("/my-login").and().logout().logoutUrl("/my-logout").and().exceptionHandling()
                 .accessDeniedPage("/my-access-deny");
@@ -40,17 +50,27 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         return new InMemoryUserDetailsManager(admin, user);
     }*/
 
-    @Bean
+/*    @Bean
     public PasswordEncoder passwordEncoder() {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        Map<String, PasswordEncoder> e`ncoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder());
         return new DelegatingPasswordEncoder("{bcrypt}", encoders);
-    }
+    }*/
 
-    @Override
+  /*  @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("{bcrypt}$2a$10$4dAt6dC.wMvQa9WaqppSH.jRUTkGEqwBms.ePqlbHzkakFK.rfKL2").roles("USER");
         auth.inMemoryAuthentication().withUser("staff").password("{scrypt}$2a$10$rjhdi6qDnE0Oz733KF/6DOfqInJhYUaaB60ATEVqs/hhMcwZwWhH.").roles("STAFF");
 
+    }*/
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
     }
 }

@@ -16,7 +16,7 @@ public class PasswordEncoderTest {
 
     @Test
     public void noop() {
-       System.out.println(NoOpPasswordEncoder.getInstance().encode("12345678"));
+        System.out.println(NoOpPasswordEncoder.getInstance().encode("12345678"));
     }
 
     @Test
@@ -26,6 +26,6 @@ public class PasswordEncoderTest {
 
     @Test
     public void scrypt() {
-       // System.out.println( new SCryptPasswordEncoder.encode("12345678"));
+        // System.out.println( new SCryptPasswordEncoder.encode("12345678"));
     }
 }
